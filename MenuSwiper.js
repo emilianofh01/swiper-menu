@@ -173,10 +173,13 @@ class MenuSwiper extends LitElement {
   }
 
   onClickArrows() {
+    this.renderRoot.querySelector(
+      `.thumbnail-item[data-index='${this.swiper.realIndex}'] input`
+    ).checked = false;
     setTimeout(() => {
-      this.renderRoot
-        .querySelector(`.thumbnail-item[data-index='${this.swiper.realIndex}']`)
-        .click();
+      this.renderRoot.querySelector(
+        `.thumbnail-item[data-index='${this.swiper.realIndex}'] input`
+      ).checked = true;
     }, 10);
   }
 
@@ -428,10 +431,12 @@ class MenuSwiper extends LitElement {
                       width: 90%;
                       color: #232324;
                       margin-block: 20px;
+                      max-height: 200px;
+                      overflow-y: auto;
 
                       > ul {
                         margin-top: 20px;
-                        display: flex;
+                        /* display: flex; */
                         flex-wrap: wrap;
 
                         > li {
