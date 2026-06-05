@@ -9,7 +9,8 @@ import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.mjs
 class MenuSwiper extends LitElement {
   constructor() {
     super();
-    this.primaryColor = "#6d111a"
+    this.primaryColor = '#6d111a';
+    this.swiper;
   }
 
   firstUpdated() {
@@ -20,6 +21,10 @@ class MenuSwiper extends LitElement {
     services: { type: Array },
     primaryColor: { type: String },
   };
+
+  slideTo(e) {
+    this.swiper.slideTo(e.currentTarget.dataset.index);
+  }
 
   render() {
     return html`
@@ -122,20 +127,44 @@ class MenuSwiper extends LitElement {
         </div>
 
         <div class="menu_thumbnail">
-          <div class="thumbnail-item">
-            <img class="thumbnail-item-img" src="" alt="" />
-            <p class="thumnail_item-title">
-              <span class="thumnail_item--index">01</span>
-              Sealant Inspection
-            </p>
-          </div>
+          ${this.services.map(
+            (service, index) => html`
+              <label
+                class="thumbnail-item"
+                data-index="${index}"
+                @click=${this.slideTo}
+              >
+                <input
+                  .checked=${index + 1 == 1}
+                  type="radio"
+                  name="service"
+                  id=""
+                />
+
+                <div class="thumbnail-item-img-container">
+                  <img
+                    class="thumbnail-item-img"
+                    src="${service.imgUrl}"
+                    alt=""
+                  />
+                </div>
+
+                <p class="thumbnail_item-title">
+                  <span class="thumbnail_item--index"
+                    >${String(index + 1).padStart(2, '0')}</span
+                  >
+                  ${service.title}
+                </p>
+              </label>
+            `
+          )}
         </div>
       </div>
     `;
   }
 
   initMenuSwiper() {
-    const swiper = new Swiper(this.renderRoot.querySelector('.swiper-menu'), {
+    this.swiper = new Swiper(this.renderRoot.querySelector('.swiper-menu'), {
       // Optional parameters
       direction: 'horizontal',
       loop: true,
@@ -160,7 +189,7 @@ class MenuSwiper extends LitElement {
         --primary-color: #6d151f;
         --text-contrast-color: var(--primary-color);
 
-        max-width: 1200px;
+        /* max-width: 1200px; */
         font-size: 10px;
         padding-inline: 20px;
         width: 100%;
@@ -168,6 +197,76 @@ class MenuSwiper extends LitElement {
 
         ul {
           list-style-position: inside;
+        }
+
+        .menu_thumbnail {
+          display: flex;
+          align-items: center;
+          gap: 30px;
+          margin-top: 20px;
+          overflow-x: scroll;
+          padding: 20px;
+
+          .thumbnail-item {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+            cursor: pointer;
+
+            input[type='radio'] {
+              display: none;
+            }
+            &:has(input[type='radio']:checked) {
+              .thumbnail-item-img-container::after {
+                inset: -6px;
+                opacity: 1;
+              }
+            }
+
+            .thumbnail-item-img {
+              width: 150px;
+              border-radius: 10px;
+            }
+            .thumbnail-item-img-container {
+              position: relative;
+              border-radius: 15px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              &::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                border-radius: inherit;
+                border: 3px solid var(--primary-color);
+                transform: scale(1);
+                transition:
+                  opacity 0.15s ease,
+                  inset 0.15s ease;
+                pointer-events: none;
+              }
+            }
+
+            .thumbnail_item-title {
+              font-size: 1.8em;
+              font-weight: 500;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              gap: 10px;
+              /* font-weight: 500; */
+
+              .thumbnail_item--index {
+                font-size: 1.8em;
+                font-weight: 600;
+                color: var(--text-contrast-color);
+              }
+            }
+          }
         }
 
         .menu_carousel-wrapper {
