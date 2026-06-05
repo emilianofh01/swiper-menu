@@ -185,11 +185,14 @@ class MenuSwiper extends LitElement {
         padding: 0;
         box-sizing: border-box;
       }
+      :host {
+        width: 100%;
+      }
       .menu_carousel {
         --primary-color: #6d151f;
         --text-contrast-color: var(--primary-color);
 
-        /* max-width: 1200px; */
+        max-width: 1500px;
         font-size: 10px;
         padding-inline: 20px;
         width: 100%;
