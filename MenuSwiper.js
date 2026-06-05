@@ -294,7 +294,7 @@ class MenuSwiper extends LitElement {
             cursor: pointer;
             transition: all ease 0.25s;
 
-            @media (max-width: 800px) {
+            @media (max-width: 960px) {
               display: none;
             }
 
@@ -350,7 +350,7 @@ class MenuSwiper extends LitElement {
                     display: flex;
                     flex-direction: column;
 
-                    @media (max-width: 800px) {
+                    @media (max-width: 960px) {
                       width: 100%;
                     }
 
@@ -363,7 +363,7 @@ class MenuSwiper extends LitElement {
                       padding: 0.2em 1em;
                       margin-block: 10px;
 
-                      @media (max-width: 800px) {
+                      @media (max-width: 960px) {
                         margin-left: auto;
                       }
                     }
@@ -382,7 +382,7 @@ class MenuSwiper extends LitElement {
                         align-items: center;
                         gap: 20px;
 
-                        @media (max-width: 800px) {
+                        @media (max-width: 960px) {
                           align-items: unset;
                           flex-direction: column-reverse;
                           font-size: 0.8em;
