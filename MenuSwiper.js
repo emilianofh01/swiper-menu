@@ -38,7 +38,7 @@ class MenuSwiper extends LitElement {
 
       <div style="--primary-color: ${this.primaryColor}" class="menu_carousel">
         <div class="menu_carousel-wrapper">
-          <div class="swiper-menu-button-prev">
+          <div @click=${this.onClickArrows} class="swiper-menu-button-prev">
             <i class="fa-solid fa-chevron-left"></i>
           </div>
           <div class="swiper-menu">
@@ -111,7 +111,10 @@ class MenuSwiper extends LitElement {
                             `
                           : ''}
                         <div class="menu-carousel-ctas">
-                          <a href="#">Request Service</a>
+                          <a
+                            href="/service-appointments?service-name=${service.title}"
+                            >Request Service</a
+                          >
                         </div>
                       </div>
                     </div>
@@ -121,7 +124,7 @@ class MenuSwiper extends LitElement {
               <!-- End Menu Swiper  -->
             </div>
           </div>
-          <div class="swiper-menu-button-next">
+          <div @click=${this.onClickArrows} class="swiper-menu-button-next">
             <i class="fa-solid fa-chevron-right"></i>
           </div>
         </div>
@@ -161,6 +164,14 @@ class MenuSwiper extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  onClickArrows() {
+    setTimeout(() => {
+      this.renderRoot
+        .querySelector(`.thumbnail-item[data-index='${this.swiper.realIndex}']`)
+        .click();
+    }, 10);
   }
 
   initMenuSwiper() {
