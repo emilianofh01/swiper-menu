@@ -519,7 +519,7 @@ class MenuSwiper extends LitElement {
                       width: 90%;
                       color: #232324;
                       margin-block: 20px;
-                      max-height: 200px;
+                      max-height: 150px;
                       overflow-y: auto;
 
                       > ul {
