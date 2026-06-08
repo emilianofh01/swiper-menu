@@ -189,12 +189,10 @@ class MenuSwiper extends LitElement {
 
   initMenuSwiper() {
     this.swiper = new Swiper(this.renderRoot.querySelector('.swiper-menu'), {
-      // Optional parameters
       direction: 'horizontal',
       loop: true,
       slidesPerView: 1,
       spaceBetween: 15,
-      // Navigation arrows
       navigation: {
         nextEl: this.renderRoot.querySelector('.swiper-menu-button-next'),
         prevEl: this.renderRoot.querySelector('.swiper-menu-button-prev'),
@@ -205,11 +203,24 @@ class MenuSwiper extends LitElement {
           const item = this.renderRoot.querySelector(
             `.menu_thumbnail .thumbnail-item[data-index="${e.realIndex}"]`
           );
+          const container = item.parentElement;
 
-          item.scrollIntoView({
-            behavior: 'smooth',
-            left: item.offsetLeft,
-          });
+          const containerRect = container.getBoundingClientRect();
+          const itemRect = item.getBoundingClientRect();
+
+          if (itemRect.left < containerRect.left) {
+            container.scrollBy({
+              left: itemRect.left - containerRect.left,
+              behavior: 'smooth',
+            });
+          }
+
+          if (itemRect.right > containerRect.right) {
+            container.scrollBy({
+              left: itemRect.right - containerRect.right,
+              behavior: 'smooth',
+            });
+          }
         },
       },
     });
