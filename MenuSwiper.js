@@ -10,6 +10,7 @@ class MenuSwiper extends LitElement {
   constructor() {
     super();
     this.primaryColor = '#6d111a';
+    this.currentIndex = 1;
     this.swiper;
   }
 
@@ -20,10 +21,15 @@ class MenuSwiper extends LitElement {
   static properties = {
     services: { type: Array },
     primaryColor: { type: String },
+    currentIndex: { type: Number },
   };
 
   slideTo(e) {
     this.swiper.slideTo(e.currentTarget.dataset.index);
+  }
+
+  onImgLoad(e) {
+    e.currentTarget.classList.add("load");
   }
 
   render() {
@@ -38,7 +44,7 @@ class MenuSwiper extends LitElement {
 
       <div style="--primary-color: ${this.primaryColor}" class="menu_carousel">
         <div class="menu_carousel-wrapper">
-          <div @click=${this.onClickArrows} class="swiper-menu-button-prev">
+          <div class="swiper-menu-button-prev">
             <i class="fa-solid fa-chevron-left"></i>
           </div>
           <div class="swiper-menu">
@@ -130,57 +136,55 @@ class MenuSwiper extends LitElement {
               <!-- End Menu Swiper  -->
             </div>
           </div>
-          <div @click=${this.onClickArrows} class="swiper-menu-button-next">
+          <div class="swiper-menu-button-next">
             <i class="fa-solid fa-chevron-right"></i>
           </div>
         </div>
 
         <div class="menu_thumbnail">
-          ${this.services.map(
-            (service, index) => html`
-              <label
-                class="thumbnail-item"
-                data-index="${index}"
-                @click=${this.slideTo}
-              >
-                <input
-                  .checked=${index + 1 == 1}
-                  type="radio"
-                  name="service"
-                  id=""
-                />
-
-                <div class="thumbnail-item-img-container">
-                  <img
-                    class="thumbnail-item-img"
-                    src="${service.imgUrl}"
-                    alt=""
+          <!-- <input
+            class="slide-menu-search"
+            placeholder="Search by name"
+            type="text"
+          /> -->
+          <div>
+            ${this.services.map(
+              (service, index) => html`
+                <label
+                  class="thumbnail-item"
+                  data-index="${index}"
+                  @click=${this.slideTo}
+                >
+                  <input
+                    .checked=${index == this.currentIndex}
+                    type="radio"
+                    name="service"
+                    id=""
                   />
-                </div>
 
-                <p class="thumbnail_item-title">
-                  <span class="thumbnail_item--index"
-                    >${String(index + 1).padStart(2, '0')}</span
-                  >
-                  ${service.title}
-                </p>
-              </label>
-            `
-          )}
+                  <div class="thumbnail-item-img-container">
+                    <img
+                      @load=${this.onImgLoad}
+                      class="thumbnail-item-img"
+                      src="${service.imgUrl}"
+                      alt=""
+                    />
+                    <div class="skeleton-img"></div>
+                  </div>
+
+                  <p class="thumbnail_item-title">
+                    <span class="thumbnail_item--index"
+                      >${String(index + 1).padStart(2, '0')}</span
+                    >
+                    ${service.title}
+                  </p>
+                </label>
+              `
+            )}
+          </div>
         </div>
       </div>
     `;
-  }
-
-  onClickArrows() {
-    this.renderRoot.querySelector(
-      `.thumbnail-item[data-index='${this.swiper.realIndex}'] input`
-    ).checked = false;
-    setTimeout(() => {
-      this.renderRoot.querySelector(
-        `.thumbnail-item[data-index='${this.swiper.realIndex}'] input`
-      ).checked = true;
-    }, 10);
   }
 
   initMenuSwiper() {
@@ -195,6 +199,20 @@ class MenuSwiper extends LitElement {
         nextEl: this.renderRoot.querySelector('.swiper-menu-button-next'),
         prevEl: this.renderRoot.querySelector('.swiper-menu-button-prev'),
       },
+      on: {
+        slideChange: (e) => {
+          this.currentIndex = e.realIndex;
+          this.renderRoot
+            .querySelector(
+              `.menu_thumbnail .thumbnail-item[data-index="${e.realIndex}"]`
+            )
+            .scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            });
+        },
+      },
     });
   }
 
@@ -207,6 +225,14 @@ class MenuSwiper extends LitElement {
       }
       :host {
         width: 100%;
+      }
+      @keyframes skeleton {
+        0% {
+          left: -50%;
+        }
+        100% {
+          left: 100%;
+        }
       }
       .menu_carousel {
         --primary-color: #6d151f;
@@ -222,13 +248,63 @@ class MenuSwiper extends LitElement {
           list-style-position: inside;
         }
 
+        .skeleton-img {
+          position: relative;
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: -1;
+          background-color: #e5e5e5;
+
+          &:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 255, 255, 0.5),
+              transparent
+            );
+            height: 100%;
+            left: -50%;
+            animation-name: skeleton;
+            animation-timing-function: ease;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+          }
+        }
+
         .menu_thumbnail {
           display: flex;
-          align-items: center;
-          gap: 30px;
+          flex-direction: column;
+          align-items: flex-end;
           margin-top: 20px;
-          overflow-x: scroll;
-          padding: 20px;
+
+          .slide-menu-search {
+            padding-block: 10px;
+            padding-inline: 10px;
+            border-radius: 8px;
+            border: 2px solid #d6d6d6;
+            outline: 0px solid #6d111a46;
+            font-size: 1.4em;
+            transition: all ease 0.1s;
+
+            &:focus {
+              border: 2px solid #6d111a;
+              outline: 4px solid #6d111a23;
+            }
+          }
+
+          > div {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            overflow-x: scroll;
+            padding: 20px;
+            scroll-padding-right: 80px;
+            width: 100%;
+          }
 
           .thumbnail-item {
             display: flex;
@@ -247,16 +323,28 @@ class MenuSwiper extends LitElement {
               }
             }
 
-            .thumbnail-item-img {
+            .thumbnail-item-img,
+            .skeleton-img {
               width: 150px;
+              height: 80px;
               border-radius: 10px;
             }
+            .thumbnail-item-img {
+              transition: opacity ease 0.25s;
+              opacity: 0;
+
+              &.load {
+                opacity: 1;
+              }
+            }
+
             .thumbnail-item-img-container {
               position: relative;
               border-radius: 15px;
               display: flex;
               align-items: center;
               justify-content: center;
+              overflow: hidden;
 
               &::after {
                 content: '';
