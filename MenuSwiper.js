@@ -29,7 +29,7 @@ class MenuSwiper extends LitElement {
   }
 
   onImgLoad(e) {
-    e.currentTarget.classList.add("load");
+    e.currentTarget.classList.add('load');
   }
 
   render() {
@@ -202,15 +202,14 @@ class MenuSwiper extends LitElement {
       on: {
         slideChange: (e) => {
           this.currentIndex = e.realIndex;
-          this.renderRoot
-            .querySelector(
-              `.menu_thumbnail .thumbnail-item[data-index="${e.realIndex}"]`
-            )
-            .scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'nearest',
-            });
+          const item = this.renderRoot.querySelector(
+            `.menu_thumbnail .thumbnail-item[data-index="${e.realIndex}"]`
+          );
+
+          item.scrollIntoView({
+            behavior: 'smooth',
+            left: item.offsetLeft,
+          });
         },
       },
     });
