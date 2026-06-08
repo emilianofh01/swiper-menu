@@ -10,7 +10,7 @@ class MenuSwiper extends LitElement {
   constructor() {
     super();
     this.primaryColor = '#6d111a';
-    this.currentIndex = 1;
+    this.currentIndex = 0;
     this.swiper;
   }
 
@@ -25,7 +25,8 @@ class MenuSwiper extends LitElement {
   };
 
   slideTo(e) {
-    this.swiper.slideTo(e.currentTarget.dataset.index);
+    const item = e.currentTarget;
+    this.swiper.slideTo(Number(item.dataset.index));
   }
 
   onImgLoad(e) {
@@ -160,6 +161,7 @@ class MenuSwiper extends LitElement {
                     type="radio"
                     name="service"
                     id=""
+                    disabled
                   />
 
                   <div class="thumbnail-item-img-container">
@@ -190,7 +192,8 @@ class MenuSwiper extends LitElement {
   initMenuSwiper() {
     this.swiper = new Swiper(this.renderRoot.querySelector('.swiper-menu'), {
       direction: 'horizontal',
-      loop: true,
+      // loop: true,
+      rewind: true,
       slidesPerView: 1,
       spaceBetween: 15,
       navigation: {
