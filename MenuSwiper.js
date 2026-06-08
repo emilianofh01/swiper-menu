@@ -254,6 +254,7 @@ class MenuSwiper extends LitElement {
           left: 0;
           top: 0;
           z-index: -1;
+          overflow: hidden;
           background-color: #e5e5e5;
 
           &:after {
@@ -344,7 +345,7 @@ class MenuSwiper extends LitElement {
               display: flex;
               align-items: center;
               justify-content: center;
-              overflow: hidden;
+              /* overflow: hidden; */
 
               &::after {
                 content: '';
